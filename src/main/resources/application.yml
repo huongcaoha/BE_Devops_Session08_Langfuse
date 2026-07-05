@@ -1,0 +1,82 @@
+spring:
+  application:
+    name: Session08
+  ai:
+    openai:
+      api-key: "AIzaSyDjM0W2FizqoWDJt5za4Dx2aWdHR14ntS0"
+      base-url: "https://generativelanguage.googleapis.com/v1beta/openai/"
+      chat:
+        options:
+          model: "gemini-2.5-flash"
+          temperature: 0.2
+      embedding:
+        options:
+          model: "gemini-embedding-001"
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 3072
+        index-type: NONE
+        remove-existing-vector-store-table: true
+  datasource:
+#    docker run --name pgvector-local -e POSTGRES_PASSWORD=12345678 -e POSTGRES_DB=ptit_k24_ai_integrated_session05 -p 5433:5432 -d ankane/pgvector
+#    url: jdbc:postgresql://localhost:5433/ptit_k24_ai_integrated_session05
+#    username: postgres
+#    password: "12345678"
+#    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://aws-1-ap-southeast-1.pooler.supabase.com:5432/postgres?pgbouncer=true
+    username: postgres.wlcpybzrjwcugvjteoby
+    password: "kC3$!XyRQ4N82&f"
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  langfuse:
+    public-key: pk-lf-b5941b3b-dbcc-4a31-b0bd-f3f011782635
+    secret-key: sk-lf-2bf6354a-55a1-4012-ba1f-82f6ba8502d0
+    host: http://localhost:3000
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # Bắt 100% các request (không bỏ sót log nào)
+  otlp:
+    tracing:
+      # Nếu dùng bản Cloud free: https://cloud.langfuse.com/api/public/otel/v1/traces
+      # Nếu dùng Docker tự host: http://localhost:3000/api/public/otel/v1/traces
+      endpoint: "https://cloud.langfuse.com/api/public/otel/v1/traces"
+      headers:
+        # LƯU Ý: Thầy cần tự encode Base64 chuỗi "pk-lf-xxx:sk-lf-yyy"
+        # Mở terminal gõ: echo -n "pk-lf-...:sk-lf-..." | base64
+        Authorization: "Basic cGstbGYtYjU5NDFiM2ItZGJjYy00YTMxLWIwYmQtZjNmMDExNzgyNjM1OnNrLWxmLTJiZjYzNTRhLTU1YTEtNDAxMi1iYTFmLTgyZjZiYTg1MDJkMA=="
+#  ai:
+#    openai:
+#      api-key: "sk-h8FvEuMP1i9GhB5cx7J1mxcyeQBCUcob1b9EyA4RaV9EKcHN"
+#      chat:
+#        options:
+#          model: "openai/gpt-5.5"
+#      embedding:
+#        options:
+#          model: "text-embedding-3-small"
+
+#  ai:
+#    ollama:
+#      base-url: http://localhost:11434
+#      chat:
+#        options:
+#          model: qwen2.5:7b
+#          temperature: 0.2
+#
+#      embedding:
+#        options:
+#          model: qwen2.5:7b
+#
+#    vectorstore:
+#      pgvector:
+#        initialize-schema: true

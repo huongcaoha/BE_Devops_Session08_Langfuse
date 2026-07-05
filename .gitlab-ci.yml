@@ -1,0 +1,36 @@
+image: eclipse-temurin:21-jdk-alpine
+
+variables:
+  PROJECT_NAME: "QuickBite-User-Service"
+  # Tắt Gradle Daemon để tiết kiệm RAM trên môi trường CI/CD
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+stages:
+  - info
+  - test
+
+print_env_job:
+  stage: info
+  before_script:
+    - echo "Chuẩn bị in thông tin môi trường cho dự án ${PROJECT_NAME}..."
+  script:
+    - java -version
+    - echo "Tên dự án hiện tại là ${PROJECT_NAME}"
+    - echo "Nhánh Git đang chạy pipeline là ${CI_COMMIT_BRANCH}"
+  after_script:
+    - echo "Hoàn thành job in thông tin môi trường."
+
+run_tests_job:
+  stage: test
+  before_script:
+    # Đảm bảo file gradlew có quyền thực thi, tránh lỗi "Permission denied"
+    - chmod +x ./gradlew
+  script:
+    - echo "Hệ thống đang tiến hành chạy toàn bộ các bài test tự động với Gradle..."
+    - ./gradlew test
+  # Thu thập báo cáo kết quả test để hiển thị trên giao diện Merge Request
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - "**/build/test-results/test/TEST-*.xml"

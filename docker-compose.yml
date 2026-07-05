@@ -1,0 +1,19 @@
+
+services:
+  session08-langfuse:
+    build: .
+    container_name: session08_langfuse
+    ports:
+      - "8080:8080"
+    restart: unless-stopped # Tự động khởi động lại container nếu nó bị crash hoặc server khởi động lại
+#    environment:
+#      # Truyền biến môi trường vào Spring Boot (ghi đè file application.properties)
+#      - SPRING_PROFILES_ACTIVE=prod
+#      - LANGFUSE_PUBLIC_KEY=your_public_key_here
+#      - LANGFUSE_SECRET_KEY=your_secret_key_here
+#      - LANGFUSE_HOST=https://cloud.langfuse.com
+    # Khới tạo giới hạn tài nguyên (Tùy chọn)
+    deploy:
+      resources:
+        limits:
+          memory: 512M

@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.5'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'org.example'
+version = '0.0.1-SNAPSHOT'
+description = 'Session05'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+    // BẮT BUỘC CÓ: Kho lưu trữ riêng của Spring cho các bản Milestone (M1, M2...)
+    maven { url 'https://repo.spring.io/milestone' }
+}
+
+ext {
+    // Phiên bản chuẩn của Spring AI
+    set('springAiVersion', "1.0.0-M5")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testCompileOnly 'org.projectlombok:lombok'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+
+    implementation 'org.springframework.ai:spring-ai-tika-document-reader'
+//    implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'
+    implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+//        implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
+
+// Và dĩ nhiên là thư viện kết nối PGVector
+    implementation 'org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter'
+
+    // THÊM 3 DÒNG NÀY (BẮT BUỘC ĐỂ KẾT NỐI LANGFUSE QUA OPENTELEMETRY)
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+    implementation 'io.opentelemetry:opentelemetry-exporter-otlp'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// BẮT BUỘC CÓ: Bộ quản lý phiên bản tự động cho Spring AI
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+    }
+}
